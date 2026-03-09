@@ -34,7 +34,7 @@ def index():
         session["difficulty"] = difficulty
 
         with open(WORD_BANK) as f: #this opens the difficulty
-            words = f.read().split()
+            words = f.read().lower().split()
 
         # Choose word length based on difficulty
         if difficulty == "Easy":
@@ -138,3 +138,4 @@ def index():
 
 if __name__ == "__main__":
     app.run(debug=True) #runs the code setting debug to true to be able to see error messages.
+
