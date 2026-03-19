@@ -1,9 +1,9 @@
 import random
-from flask import Flask, render_template, request, session
+from flask import Flask, render_template, request, session, redirect, url_for
 import time
 
 app = Flask(__name__)
-app.secret_key = "12345bob" #key used to create the flask server
+app.secret_key = "12345bob" #key used to create the flask server change this for different server
 
 WORD_BANK = "words.csv" # word bank with the words
 DIFFICULTY = ["Easy", "Medium", "Hard"]
@@ -87,12 +87,21 @@ def index():
                     message = "You already guessed that letter."
                 else:
                     guessed_letters.append(guess)
-                    session["guessed_letters"] = guessed_letters
+                    session["guessed_letters"] = guessed_letters #saves the guessed letters to a flask session
 
                     if guess in chosen_word:
                         session["points"] += 10
                     else:
                         session["points"] -= 10
+
+                    # Automatically restart if points drop to 0 or below
+                    if session["points"] <= 0:
+                        # Reset all game-related session variables
+                        session.clear()
+                        session["points"] = 100  # re-initialize points
+
+                        # Redirect to restart the game
+                        return redirect(url_for("index"))
 
             # invalid guess
             else:
@@ -138,4 +147,3 @@ def index():
 
 if __name__ == "__main__":
     app.run(debug=True) #runs the code setting debug to true to be able to see error messages.
-
